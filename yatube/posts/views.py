@@ -38,12 +38,12 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    author= get_object_or_404(User, username=username)
-    if Follow.objects.filter(author= author, user= request.user).exists():
-        following= True
+    author= get_object_or_404(User, username= username)
+    if Follow.objects.filter(author=author, user=request.user).exists():
+        following = True
     else:
         following= False
-    user= request.user
+    user = request.user
     post_list = author.posts.all()
     context = {
         'user': user,
@@ -57,7 +57,7 @@ def profile(request, username):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
-    comment=Comment.objects.all().filter(post=post)
+    comment= Comment.objects.all().filter(post=post)
     context = {
         'post': post,
         'comment': comment,
@@ -120,6 +120,7 @@ def follow_index(request):
     context = {
         'page_obj': paginator(request, post_list), }
     return render(request, 'posts/follow.html', context)
+
 
 @login_required
 def profile_follow(request, username):
