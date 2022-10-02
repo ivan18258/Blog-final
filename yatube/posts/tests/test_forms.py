@@ -7,7 +7,6 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Group, Post, User, Comment
-from posts.forms import CommentForm
 
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -149,7 +148,7 @@ class TasCreateFormTests(TestCase):
         self.assertEqual(
             post_with_image.author, form_data['author']
         )
-    
+
     def test_comment(self):
         form_data = {
             'text': 'Привет',
@@ -158,7 +157,7 @@ class TasCreateFormTests(TestCase):
         }
         posts_count = Comment.objects.count()
         self.authorized_client.post(
-            reverse('posts:add_comment',kwargs={'post_id': self.post_id}),
+            reverse('posts:add_comment', kwargs={'post_id': self.post_id}),
             data=form_data,
         )
         comment = Comment.objects.get(text='Привет')

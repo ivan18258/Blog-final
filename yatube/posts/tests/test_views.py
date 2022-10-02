@@ -1,7 +1,5 @@
-import shutil
 import tempfile
-from ast import Delete
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 from django import forms
 from django.core.cache import cache
@@ -12,6 +10,7 @@ from posts.models import Group
 from posts.models import User
 from posts.models import Follow
 from django.conf import settings
+
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -25,13 +24,13 @@ class PostViewsTests(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
-        small_gif = (            
-                b'\x47\x49\x46\x38\x39\x61\x02\x00'
-                b'\x01\x00\x80\x00\x00\x00\x00\x00'
-                b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-                b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-                b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-                b'\x0A\x00\x3B'
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
         )
         uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -82,7 +81,6 @@ class PostViewsTests(TestCase):
         2. Размер списка не равен нулю.
         3. Есть картинка.
         """
-        
         response = self.guest_client.get(reverse('posts:index'))
         first_object = response.context['page_obj'][0]
         self.assertIn('page_obj', response.context.keys())
@@ -157,9 +155,8 @@ class PostViewsTests(TestCase):
         for postsurls, posts in posturls_posts_page:
             for page in templates:
                 with self.subTest(page=page):
-                    response = self.authorized_client.get(page + postsurls)
+                    response= self.authorized_client.get(page + postsurls)
                     self.assertEqual(len(response.context['page_obj']), posts)
-    
 
     def test_cache(self):
         cache.clear()
@@ -168,37 +165,41 @@ class PostViewsTests(TestCase):
         content2= (self.authorized_client.get('/')).content
         self.assertEqual(content,content2)
 
+
 class FollowViewsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.post_autor = User.objects.create(
-            username='post_autor',
+        cls.post_autor= User.objects.create(
+            username= 'post_autor',
         )
-        cls.post_follower = User.objects.create(
-            username='post_follower',
+        cls.post_follower= User.objects.create(
+            username= 'post_follower',
         )
-        cls.post = Post.objects.create(
-            text='Подпишись на меня',
-            author=cls.post_autor,
+        cls.post= Post.objects.create(
+            text= 'Подпишись на меня',
+            author= cls.post_autor,
         )
+
     def setUp(self):
         cache.clear()
-        self.author_client = Client()
+        self.author_client= Client()
         self.author_client.force_login(self.post_follower)
-        self.follower_client = Client()
+        self.follower_client= Client()
         self.follower_client.force_login(self.post_autor)
+
     def test_follow_on_user(self):
         """Проверка подписки на пользователя."""
-        count_follow = Follow.objects.count()
+        count_follow= Follow.objects.count()
         self.follower_client.post(
             reverse(
                 'posts:profile_follow',
-                kwargs={'username': self.post_follower}))
-        follow = Follow.objects.all().latest('id')
+                kwargs= {'username': self.post_follower}))
+        follow= Follow.objects.all().latest('id')
         self.assertEqual(Follow.objects.count(), count_follow + 1)
         self.assertEqual(follow.author_id, self.post_follower.id)
         self.assertEqual(follow.user_id, self.post_autor.id)
+
     def test_unfollow_on_user(self):
         """Проверка отписки от пользователя."""
         Follow.objects.create(
@@ -210,6 +211,7 @@ class FollowViewsTest(TestCase):
                 'posts:profile_unfollow',
                 kwargs={'username': self.post_follower}))
         self.assertEqual(Follow.objects.count(), count_follow - 1)
+
     def test_follow_on_authors(self):
         """Проверка записей у тех кто подписан."""
         post = Post.objects.create(
@@ -221,6 +223,7 @@ class FollowViewsTest(TestCase):
         response = self.author_client.get(
             reverse('posts:follow_index'))
         self.assertIn(post, response.context['page_obj'].object_list)
+
     def test_notfollow_on_authors(self):
         """Проверка записей у тех кто не подписан."""
         post = Post.objects.create(
@@ -229,4 +232,3 @@ class FollowViewsTest(TestCase):
         response = self.author_client.get(
             reverse('posts:follow_index'))
         self.assertNotIn(post, response.context['page_obj'].object_list)
-
