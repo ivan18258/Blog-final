@@ -127,7 +127,7 @@ def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     if Follow.objects.filter(author=author,
                              user=request.user).exists(
-    ) is False and request.user != username:
+    ) is False and request.user.username != username:
         Follow.objects.get_or_create(
             user=request.user,
             author=author,
