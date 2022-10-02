@@ -57,7 +57,7 @@ def profile(request, username):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = CommentForm()
-    comment= Comment.objects.all().filter(post=post)
+    comment = Comment.objects.all().filter(post=post)
     context = {
         'post': post,
         'comment': comment,
@@ -68,7 +68,7 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     form = PostForm(request.POST or None,
-        files=request.FILES or None)
+                    files=request.FILES or None)
     if form.is_valid():
         create_post = form.save(commit=False)
         create_post.author = request.user
@@ -126,7 +126,7 @@ def follow_index(request):
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
     if Follow.objects.filter(author=author,
-            user=request.user).exists() is False:
+                             user=request.user).exists() is False:
         Follow.objects.get_or_create(
             user=request.user,
             author=author,

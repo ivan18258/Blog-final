@@ -14,6 +14,7 @@ from django.conf import settings
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
+
 class PostViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -154,15 +155,15 @@ class PostViewsTests(TestCase):
         ]
         for postsurls, posts in posturls_posts_page:
             for page in templates:
-                with self.subTest(page=page):
+                with self.subTest(page = page):
                     response= self.authorized_client.get(page + postsurls)
                     self.assertEqual(len(response.context['page_obj']), posts)
 
     def test_cache(self):
         cache.clear()
-        content= (self.authorized_client.get('/')).content
+        content = (self.authorized_client.get('/')).content
         self.post.delete
-        content2= (self.authorized_client.get('/')).content
+        content2 = (self.authorized_client.get('/')).content
         self.assertEqual(content,content2)
 
 
@@ -170,22 +171,22 @@ class FollowViewsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.post_autor= User.objects.create(
+        cls.post_autor = User.objects.create(
             username= 'post_autor',
         )
-        cls.post_follower= User.objects.create(
+        cls.post_follower = User.objects.create(
             username= 'post_follower',
         )
-        cls.post= Post.objects.create(
-            text= 'Подпишись на меня',
-            author= cls.post_autor,
+        cls.post = Post.objects.create(
+            text='Подпишись на меня',
+            author=cls.post_autor,
         )
 
     def setUp(self):
         cache.clear()
-        self.author_client= Client()
+        self.author_client = Client()
         self.author_client.force_login(self.post_follower)
-        self.follower_client= Client()
+        self.follower_client = Client()
         self.follower_client.force_login(self.post_autor)
 
     def test_follow_on_user(self):
@@ -194,8 +195,8 @@ class FollowViewsTest(TestCase):
         self.follower_client.post(
             reverse(
                 'posts:profile_follow',
-                kwargs= {'username': self.post_follower}))
-        follow= Follow.objects.all().latest('id')
+                kwargs={'username': self.post_follower}))
+        follow = Follow.objects.all().latest('id')
         self.assertEqual(Follow.objects.count(), count_follow + 1)
         self.assertEqual(follow.author_id, self.post_follower.id)
         self.assertEqual(follow.user_id, self.post_autor.id)
