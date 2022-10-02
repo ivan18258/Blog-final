@@ -68,21 +68,21 @@ class Comment(models.Model):
     )
     created = models.DateTimeField(
         'коментарий оставлен',
-        auto_now_add= True
+        auto_now_add=True
     )
-    
+
     def __str__(self):
         return self.text[:15]
 
 
 class Follow(models.Model):
-    user= models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete= models.CASCADE,
         related_name='follower',
         verbose_name='Кто подписывается'
     )
-    author= models.ForeignKey(
+    author = models.ForeignKey(
         User,
         null=True,
         on_delete=models.SET_NULL,
