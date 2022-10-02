@@ -172,7 +172,7 @@ class FollowViewsTest(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.post_autor = User.objects.create(
-            username= 'post_autor',
+            username='post_autor',
         )
         cls.post_follower = User.objects.create(
             username='post_follower',
