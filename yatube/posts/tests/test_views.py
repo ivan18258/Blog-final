@@ -155,8 +155,8 @@ class PostViewsTests(TestCase):
         ]
         for postsurls, posts in posturls_posts_page:
             for page in templates:
-                with self.subTest(page = page):
-                    response= self.authorized_client.get(page + postsurls)
+                with self.subTest(page=page):
+                    response = self.authorized_client.get(page + postsurls)
                     self.assertEqual(len(response.context['page_obj']), posts)
 
     def test_cache(self):
@@ -164,7 +164,7 @@ class PostViewsTests(TestCase):
         content = (self.authorized_client.get('/')).content
         self.post.delete
         content2 = (self.authorized_client.get('/')).content
-        self.assertEqual(content,content2)
+        self.assertEqual(content, content2)
 
 
 class FollowViewsTest(TestCase):
@@ -175,7 +175,7 @@ class FollowViewsTest(TestCase):
             username= 'post_autor',
         )
         cls.post_follower = User.objects.create(
-            username= 'post_follower',
+            username='post_follower',
         )
         cls.post = Post.objects.create(
             text='Подпишись на меня',
@@ -191,7 +191,7 @@ class FollowViewsTest(TestCase):
 
     def test_follow_on_user(self):
         """Проверка подписки на пользователя."""
-        count_follow= Follow.objects.count()
+        count_follow = Follow.objects.count()
         self.follower_client.post(
             reverse(
                 'posts:profile_follow',
