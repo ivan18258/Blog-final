@@ -1,0 +1,16 @@
+<h5> Коментарии</h5>
+{% for commen in comment %}
+<article>
+    <p>{{ commen.text }}</p>
+    <ul>
+      <li>
+        Автор: {{ commen.author.get_full_name }}
+      </li>
+      <li>
+        Дата публикации: {{ commen.created|date:"d E Y" }}
+      </li>
+    </ul>
+    {% if not forloop.last %}<hr>{% endif %}
+  </article>
+    {% endfor %}
+   
