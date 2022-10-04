@@ -1,10 +1,6 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
-
-from posts.models import Group, Post
-
-
-User = get_user_model()
+from http import HTTPStatus
+from posts.models import Group, Post, User
 
 
 class PostURLTests(TestCase):
@@ -29,14 +25,15 @@ class PostURLTests(TestCase):
 
     def test_urls_exists_at_desired_location(self):
         """Общедоступные страницы сайта"""
-        urls_response = {
-            '/': 200,
-            '/group/test-slug/': 200,
-            '/profile/test_name/': 200,
-            f'/posts/{self.post.pk}/': 200,
-            '/unexisting_page/': 404,
-        }
-        for url, status_code in urls_response.items():
+        urls_response = (
+            '/',
+            '/group/test-slug/',
+            '/profile/test_name/',
+            f'/posts/{self.post.pk}/',
+        )
+        for url in urls_response:
             with self.subTest(url=url):
                 response = self.guest_client.get(url)
-                self.assertEqual(response.status_code, status_code)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
+        response = self.guest_client.get('/unexisting_page/')
+        self.assertEqual(response.status_code, 404)

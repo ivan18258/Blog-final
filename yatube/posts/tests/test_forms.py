@@ -56,14 +56,26 @@ class TasCreateFormTests(TestCase):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x01\x00'
+            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
+            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
+            b'\x00\x00\x01\x00\x01\x00\x00\x02'
+            b'\x02\x4c\x01\x00\x3b'
+        )
+        self.uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=self.small_gif,
+            content_type='image/gif')
 
     def test_post_create(self):
-        """ Создание поста."""
+        """Создание поста."""
         posts = Post.objects.all()
         posts.delete()
         data = {
             'text': 'Текст формы',
             'group': self.group.id,
+            'image': self.uploaded,
         }
         response = self.authorized_client.post(
             NEW_POST,
@@ -75,15 +87,18 @@ class TasCreateFormTests(TestCase):
         self.assertEqual(post.text, data['text'])
         self.assertEqual(data['group'], post.group.id)
         self.assertEqual(post.author, self.user)
+
         self.assertRedirects(response, self.PROFILE_URL)
 
     def test_new_post_show_correct_context(self):
+        """Проверка контекста"""
         urls = [
             NEW_POST,
             self.POST_EDIT_URL
         ]
         form_fields = {'text': forms.fields.CharField,
-                       'group': forms.fields.Field
+                       'group': forms.fields.Field,
+                        'image':forms.fields.Field,
                        }
         for url in urls:
             response = self.authorized_client.get(url)
@@ -93,10 +108,13 @@ class TasCreateFormTests(TestCase):
                     self.assertIsInstance(form_field, expected)
 
     def test_edit_post(self):
+        """Проверка изменения и сохранения поста"""
         form_data = {
             'text': 'hi!',
-            'group': f'{self.post.group.id}',
+            'group': self.post.group.id,
+            'image': self.uploaded,
         }
+        posts_count = Post.objects.count()
         response = self.authorized_client.post(
             self.POST_EDIT_URL,
             data=form_data,
@@ -104,39 +122,16 @@ class TasCreateFormTests(TestCase):
         )
         post = response.context['post']
         self.assertEqual(post.text, form_data['text'])
-        self.assertEqual(form_data['group'], f'{post.group.id}')
+        self.assertEqual(form_data['group'], post.group.id)
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, self.POST_URL)
-
-    def test_create_post_with_image(self):
-        """При отправке поста с картинкой через форму PostForm
-        создаётся запись в базе данных.
-        """
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00'
-            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
-            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
-            b'\x00\x00\x01\x00\x01\x00\x00\x02'
-            b'\x02\x4c\x01\x00\x3b'
-        )
-        uploaded = SimpleUploadedFile(
-            name='small.gif',
-            content=small_gif,
-            content_type='image/gif'
-        )
-        form_data = {
-            'text': 'Тестовый текст',
-            'group': self.group.id,
-            'image': uploaded,
-        }
-        posts_count = Post.objects.count()
         self.authorized_client.post(
-            reverse('posts:post_create'),
+            self.POST_EDIT_URL,
             data=form_data,
             follow=True)
-        post_with_image = Post.objects.get(text='Тестовый текст')
+        post_with_image = Post.objects.get(text='hi!')
         self.assertEqual(
-            Post.objects.count(), posts_count + 1
+            Post.objects.count(), posts_count
         )
         self.assertEqual(
             post_with_image.text, form_data['text']
@@ -148,7 +143,9 @@ class TasCreateFormTests(TestCase):
             form_data['image'].name, post_with_image.image.name
         )
 
+
     def test_comment(self):
+        """Проверка коментирования"""
         form_data = {
             'text': 'Привет',
         }
