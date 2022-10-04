@@ -161,9 +161,9 @@ class PostViewsTests(TestCase):
 
     def test_cache(self):
         cache.clear()
-        content = (self.authorized_client.get('/')).content
+        content = (self.authorized_client.get(reverse('posts:index'))).content
         self.post.delete
-        content2 = (self.authorized_client.get('/')).content
+        content2 = (self.authorized_client.get(reverse('posts:index'))).content
         self.assertEqual(content, content2)
 
 
@@ -196,10 +196,10 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': self.post_follower}))
-        follow = Follow.objects.all().latest('id')
-        self.assertEqual(Follow.objects.count(), count_follow + 1)
-        self.assertEqual(follow.author_id, self.post_follower.id)
-        self.assertEqual(follow.user_id, self.post_autor.id)
+        follow = Follow.objects.all().filter(user=self.post_autor, 
+        author=self.post_follower).exists()
+        self.assertEqual(follow, True)
+        
 
     def test_unfollow_on_user(self):
         """Проверка отписки от пользователя."""
@@ -211,7 +211,9 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.post_follower}))
-        self.assertEqual(Follow.objects.count(), count_follow - 1)
+        follow = Follow.objects.all().filter(user=self.post_autor, 
+        author=self.post_follower).exists()
+        self.assertEqual(follow, False)
 
     def test_follow_on_authors(self):
         """Проверка записей у тех кто подписан."""
@@ -233,3 +235,13 @@ class FollowViewsTest(TestCase):
         response = self.author_client.get(
             reverse('posts:follow_index'))
         self.assertNotIn(post, response.context['page_obj'].object_list)
+
+    def test_follow_user_user(self):
+        """Проверка подписки на себя."""
+        self.author_client.post(
+            reverse(
+                'posts:profile_follow',
+                kwargs={'username': self.post_follower}))
+        follow = Follow.objects.all().filter(user=self.post_follower, 
+        author=self.post_follower).exists()
+        self.assertEqual(follow, False)

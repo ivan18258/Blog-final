@@ -127,7 +127,6 @@ class TasCreateFormTests(TestCase):
         form_data = {
             'text': 'Тестовый текст',
             'group': self.group.id,
-            'author': self.user,
             'image': uploaded,
         }
         posts_count = Post.objects.count()
@@ -145,15 +144,13 @@ class TasCreateFormTests(TestCase):
         self.assertEqual(
             post_with_image.group.id, form_data['group']
         )
-        self.assertEqual(
-            post_with_image.author, form_data['author']
+        self.assertIn(
+            form_data['image'].name, post_with_image.image.name
         )
 
     def test_comment(self):
         form_data = {
             'text': 'Привет',
-            'post': self.post,
-            'author': self.user,
         }
         posts_count = Comment.objects.count()
         self.authorized_client.post(
@@ -166,10 +163,4 @@ class TasCreateFormTests(TestCase):
         )
         self.assertEqual(
             comment.text, form_data['text']
-        )
-        self.assertEqual(
-            comment.post, form_data['post']
-        )
-        self.assertEqual(
-            comment.author, form_data['author']
         )
