@@ -195,8 +195,8 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': self.post_follower}))
-        follow = Follow.objects.all().filter(user=self.post_autor,
-                                             author=self.post_follower).exists()
+        follow = Follow.objects.all(
+        ).filter(user=self.post_autor, author=self.post_follower).exists()
         self.assertEqual(follow, True)
 
     def test_unfollow_on_user(self):
@@ -208,8 +208,8 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.post_follower}))
-        follow = Follow.objects.all().filter(user=self.post_autor,
-                                             author=self.post_follower).exists()
+        follow = Follow.objects.all(
+        ).filter(user=self.post_autor, author=self.post_follower).exists()
         self.assertEqual(follow, False)
 
     def test_follow_on_authors(self):
@@ -240,5 +240,5 @@ class FollowViewsTest(TestCase):
                 'posts:profile_follow',
                 kwargs={'username': self.post_follower}))
         follow = Follow.objects.all(
-        ).filter(user=self.post_follower,author=self.post_follower).exists()
+        ).filter(user=self.post_follower, author=self.post_follower).exists()
         self.assertEqual(follow, False)
