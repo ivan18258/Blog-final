@@ -98,7 +98,7 @@ class TasCreateFormTests(TestCase):
         ]
         form_fields = {'text': forms.fields.CharField,
                        'group': forms.fields.Field,
-                        'image':forms.fields.Field,
+                       'image': forms.fields.Field,
                        }
         for url in urls:
             response = self.authorized_client.get(url)
@@ -142,7 +142,6 @@ class TasCreateFormTests(TestCase):
         self.assertIn(
             form_data['image'].name, post_with_image.image.name
         )
-
 
     def test_comment(self):
         """Проверка коментирования"""

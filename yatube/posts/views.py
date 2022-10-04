@@ -41,7 +41,7 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     following = request.user.is_authenticated and Follow.objects.filter(
         author=author, user=request.user).exists()
-        # Ничего не ломается, доп проверка в шаблоне)))
+    # Ничего не ломается, доп проверка в шаблоне)))
     user = request.user
     post_list = author.posts.all()
     context = {
