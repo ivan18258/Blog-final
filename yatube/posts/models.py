@@ -90,10 +90,10 @@ class Follow(models.Model):
         verbose_name='на кого подписался'
     )
 
-
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['user', 'author'], name='name of constraint')
+            models.UniqueConstraint(fields=['user', 'author'],
+            name='name of constraint')
         ]
 
     def __str__(self):
