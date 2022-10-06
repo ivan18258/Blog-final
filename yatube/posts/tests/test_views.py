@@ -195,9 +195,9 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': self.post_follower}))
-        self.assertEqual(Follow.objects.all(
-        ).filter(user=self.post_autor, author=self.post_follower).exists(
-        ), True)
+        self.assertTrue(Follow.objects.filter(
+            user=self.post_autor, author=self.post_follower).exists(
+        ))
 
     def test_unfollow_on_user(self):
         """Проверка отписки от пользователя."""
@@ -208,9 +208,9 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.post_follower}))
-        self.assertEqual(Follow.objects.all(
-        ).filter(user=self.post_autor, author=self.post_follower).exists(
-        ), False)
+        self.assertFalse(Follow.objects.filter(
+            user=self.post_autor, author=self.post_follower).exists(
+        ))
 
     def test_follow_on_authors(self):
         """Проверка записей у тех кто подписан."""
@@ -239,6 +239,6 @@ class FollowViewsTest(TestCase):
             reverse(
                 'posts:profile_follow',
                 kwargs={'username': self.post_follower}))
-        self.assertEqual(Follow.objects.all(
-        ).filter(user=self.post_follower, author=self.post_follower).exists(
-        ), False)
+        self.assertFalse(Follow.objects.filter(
+            user=self.post_follower, author=self.post_follower).exists(
+        ))

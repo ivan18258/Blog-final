@@ -1,3 +1,4 @@
+from cgitb import text
 from django.test import TestCase
 
 from posts.models import Group, Post, User
@@ -32,12 +33,10 @@ class PostModelTest(TestCase):
 
     def test_title_label(self):
         """verbose_name поля title совпадает с ожидаемым."""
-        post = PostModelTest.post
-        verbose = post._meta.get_field('text').verbose_name
-        self.assertEqual(verbose, 'Текст поста')
+        verbose = Post._meta.get_field('text').verbose_name
+        self.assertEqual('Текст поста', verbose)
 
     def test_title_help_text(self):
-        """help_text поля title совпадает с ожидаемым."""
-        post = PostModelTest.post
-        help_text = post._meta.get_field('text').help_text
-        self.assertEqual(help_text, 'Введите текст поста')
+        """help_text поля text совпадает с ожидаемым."""
+        help_text = Post._meta.get_field('text').help_text
+        self.assertEqual('Введите текст поста', help_text)

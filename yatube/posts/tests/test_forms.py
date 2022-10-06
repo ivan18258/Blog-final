@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 import shutil
 import tempfile
 from django import forms
@@ -67,6 +68,10 @@ class TasCreateFormTests(TestCase):
             name='small.gif',
             content=self.small_gif,
             content_type='image/gif')
+        self.upload = SimpleUploadedFile(
+            name='test.gif',
+            content=self.small_gif,
+            content_type='image/gif')
 
     def test_post_create(self):
         """Создание поста."""
@@ -87,7 +92,8 @@ class TasCreateFormTests(TestCase):
         self.assertEqual(post.text, data['text'])
         self.assertEqual(data['group'], post.group.id)
         self.assertEqual(post.author, self.user)
-
+        self.assertIn( 
+           data['image'].name, post.image.name) 
         self.assertRedirects(response, self.PROFILE_URL)
 
     def test_new_post_show_correct_context(self):
@@ -112,7 +118,7 @@ class TasCreateFormTests(TestCase):
         form_data = {
             'text': 'hi!',
             'group': self.post.group.id,
-            'image': self.uploaded,
+            'image': self.upload,
         }
         posts_count = Post.objects.count()
         response = self.authorized_client.post(
@@ -142,6 +148,7 @@ class TasCreateFormTests(TestCase):
         self.assertIn(
             form_data['image'].name, post_with_image.image.name
         )
+        
 
     def test_comment(self):
         """Проверка коментирования"""
