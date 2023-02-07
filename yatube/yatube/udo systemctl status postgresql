@@ -1,0 +1,16 @@
+[0;1;32m●[0m gunicorn.service - gunicorn daemon
+     Loaded: loaded (/etc/systemd/system/gunicorn.service; enabled; vendor preset: enabled)
+     Active: [0;1;32mactive (running)[0m since Tue 2023-02-07 12:28:47 UTC; 7s ago
+   Main PID: 31758 (gunicorn)
+      Tasks: 2 (limit: 2237)
+     Memory: 49.1M
+        CPU: 391ms
+     CGroup: /system.slice/gunicorn.service
+             ├─31758 /root/dev/hw05_final/venv/bin/python3 /root/dev/hw05_final/venv/bin/gunicorn --bind 127.0.0.1:8000 yatube.wsgi:application
+             └─31759 /root/dev/hw05_final/venv/bin/python3 /root/dev/hw05_final/venv/bin/gunicorn --bind 127.0.0.1:8000 yatube.wsgi:application
+
+фев 07 12:28:47 gerzserver.ru systemd[1]: Started gunicorn daemon.
+фев 07 12:28:47 gerzserver.ru gunicorn[31758]: [2023-02-07 12:28:47 +0000] [31758] [INFO] Starting gunicorn 20.1.0
+фев 07 12:28:47 gerzserver.ru gunicorn[31758]: [2023-02-07 12:28:47 +0000] [31758] [INFO] Listening at: http://127.0.0.1:8000 (31758)
+фев 07 12:28:47 gerzserver.ru gunicorn[31758]: [2023-02-07 12:28:47 +0000] [31758] [INFO] Using worker: sync
+фев 07 12:28:47 gerzserver.ru gunicorn[31759]: [2023-02-07 12:28:47 +0000] [31759] [INFO] Booting worker with pid: 31759
