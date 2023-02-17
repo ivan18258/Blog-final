@@ -1,3 +1,34 @@
-# hw05_final
+# Проект yatube"
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+## Описание
+
+Проект Yatube представляет собой блог, с возможностью подписаться на автора,
+
+оставить коментарий под постом автора.
+
+Посты всех авторов могут быть класифицированы по группам.
+
+## Используемые технологии
+
+- Python 3.7.9
+
+- Django 2.2.16
+
+- SQLite
+
+## Установка
+
+Клонировать репозиторий и перейти в него в командной строке:
+
+> https://github.com/ivan18258/api_yamdb.git
+
+    
+> Cоздать и активировать виртуальное окружен
+
+> python manage.py runserver
+
+## Тестовые данные
+
+В проекте есть тестовые данные, загружаемые manage командой
+
+> pythоn manage.py load_test_base
